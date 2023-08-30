@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+#  nest_app:
+#    container_name: yaks-back
+#    build:
+#      context: ./back
+#      dockerfile: Dockerfile.dev
+#    environment:
+#      DB_PORT: ${DB_PORT}
+#      DB_USERNAME: ${DB_USERNAME}
+#      DB_PASS: ${DB_PASS}
+#      DB_NAME: ${DB_NAME}
+#      APP_PORT: ${NESTJS_PORT}
+#    ports:
+#      - "${NESTJS_PORT}"
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#    volumes:
+#      - ./back/:/app
+#  #    networks:
+#  #      - yaks
+
+#  react_app:
+#    container_name: yaks-front
+#    build:
+#      context: ./front
+#      dockerfile: Dockerfile.dev
+#    ports:
+#      - "${FRONT_PORT}"
+#    depends_on:
+#      - nest_app
+#    volumes:
+#      - ./front/:/app
+#      #    networks:
+#      #      - yaks
+
+  db:
+    image: postgres:13.1
+    container_name: 'db'
+    environment:
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}"
+  #    networks:
+  #     - yaks
+
+  adminer:
+    image: adminer
+    container_name: yaks-adminer
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - 8180:8080
+      #    networks:
+      #     - yaks
+
+  redis:
+    image: redis:7-alpine
+    container_name: 'redis'
+    ports:
+      - mode: host
+        published: 6479
+        target: 6379
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: "100k"
+        max-file: "1"
+#  redis:
+#    image: "redis:alpine"
+#    container_name: yaks-cache
+#    ports:
+#      - "6480:6379"
+#    networks:
+#     - yaks
+
+#networks:
+#  yaks:
+#    driver: bridge

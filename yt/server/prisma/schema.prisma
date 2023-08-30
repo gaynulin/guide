@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Channel {
+  id               String   @id @unique
+  title            String
+  description      String?
+  customUrl        String?
+  publishedAt      DateTime
+  thumbnails       String?
+  localized        String?
+  likesPlaylists   String?
+  uploadsPlaylists String?
+
+  updatedAt DateTime @updatedAt
+  Video     Video[]
+}
+
+model Subscription {
+  channelId   String   @id @unique
+  title       String
+  publishedAt DateTime
+  updatedAt   DateTime @updatedAt
+}
+
+model PlaylistItem {
+  id             String   @id @unique
+  playlistId     String
+  playlistItemId String
+  position       Int
+  channelId      String
+  title          String
+  publishedAt    DateTime
+  description    String
+  channelTitle   String?
+  thumbnails     String?
+
+  videoId                String
+  videoOwnerChannelTitle String
+  videoOwnerChannelId    String
+
+  updatedAt DateTime @updatedAt
+
+  videoProcessed DateTime?
+
+  @@index(videoOwnerChannelId)
+  @@index(playlistId)
+  @@index(channelId)
+  @@index(videoId)
+}
+
+model Video {
+  id String @id @unique
+
+  channelId   String
+  title       String
+  publishedAt DateTime
+  description String
+
+  channelTitle String?
+  thumbnails   String?
+
+  tags String[]
+
+  categoryId String
+
+  liveBroadcastContent String
+
+  localized            String?
+  defaultAudioLanguage String?
+  contentDetails       String?
+  status               String?
+  statistics           String?
+  player               String?
+  topicDetails         String?
+
+  recordingDetails String?
+
+  liveStreamingDetails String?
+
+  whenAt DateTime
+
+  updatedAt DateTime @updatedAt
+
+  channel Channel? @relation(fields: [channelId], references: [id])
+
+  @@index(liveBroadcastContent)
+  @@index(whenAt(sort: Desc))
+  @@index([liveBroadcastContent, whenAt(sort: Desc)])
+  @@index(channelId)
+}

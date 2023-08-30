@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Youtube Guide</title>
+
+  <meta name="google-signin-client_id" content="251887848299-aiihbmh2fd7bql0v85bn3ukg4ho7ipu7.apps.googleusercontent.com">
+  <meta name="google-signin-client_secret" content="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">
+  <meta name="google-signin-redirect_url" content="http://localhost:3210/api/auth/google/redirect">
+
+</head>
+<body>
+
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+<button id="get-data">Get Profile Data</button>
+
+<script>
+  function onSignIn(googleUser) {
+      console.log({googleUser}, this)
+    var profile = googleUser.getBasicProfile();
+      var id_token = googleUser.getAuthResponse().id_token;
+
+      console.log({id_token}); // Do not send to your backend! Use an ID token instead.
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+  }
+
+  window.addEventListener('load', () => {
+      document.getElementById('get-data').addEventListener('click', () => {
+          console.log('>>>>>>', this)
+      })
+  });
+</script>
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+
+</body>
+</html>
